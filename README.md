@@ -1,6 +1,13 @@
 # Telegram_bot_template
 A Telegram bot template built with Python, ideal for rapid bot development.
 
+## MongoDB 
+
+1. Install pymongo if not already:
+    ```
+    pip install pymongo
+    ```
+
 ## how to run 
 
 1. set your telegram bot token as environment variable `PYTEL_TOKEN` :

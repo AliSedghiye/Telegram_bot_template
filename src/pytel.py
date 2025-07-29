@@ -3,11 +3,14 @@ import os
 import emoji
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from db import MongoDB 
+
 
 class Bot:
     def __init__(self):
         print("Initializing Bot...")
         self.bot = telebot.TeleBot(os.environ['PYTEL_TOKEN'])
+        self.db = MongoDB()  # Initialize MongoDB connection
         self.echo_all = self.bot.message_handler(func=lambda m: True)(self.echo_all)
         self.start_handler = self.bot.message_handler(commands=['start'])(self.start)
         self.callback_handler = self.bot.callback_query_handler(func=lambda call: True)(self.handle_callback)
@@ -28,6 +31,13 @@ class Bot:
 
     def start(self, message):
         markup = self.get_main_markup()
+        # Example: Save user info to MongoDB on /start
+        users = self.db.get_collection('users')
+        users.update_one(
+            {'user_id': message.from_user.id},
+            {'$set': {'username': message.from_user.username}},
+            upsert=True
+        )
         self.bot.reply_to(
             message,
             "Welcome! I'm your Telegram bot. How can I help you?",
